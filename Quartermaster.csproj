@@ -5,6 +5,31 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyTitle>Quartermaster</AssemblyTitle>
+    <AssemblyName>qm</AssemblyName>
+    <Version>0.0.1</Version>
+    <Authors>Curtis Lusmore</Authors>
+    <Company>Fifteenth Standard</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != 'Pack'">
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Pack'">
+    <PackAsTool>true</PackAsTool>
+    <PackageId>FifteenthStandard.Quartermaster</PackageId>
+    <ToolCommandName>qm</ToolCommandName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoTorrent" Version="2.0.7" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
 
 </Project>

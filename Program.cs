@@ -1,2 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿global using System.CommandLine;
+
+var app = new RootCommand("Search and download torrents")
+{
+    new ConfigCommand(),
+    new SearchCommand(),
+    new DownloadCommand(),
+};
+
+return await app.InvokeAsync(args);
