@@ -12,25 +12,20 @@ public class DownloadCommand : Command
 
         this.SetHandler(async hash =>
         {
-            if (string.IsNullOrEmpty(Config.DownloadDirectory))
-            {
-                Console.Error.WriteLine("Download directory is not configured.");
-                Console.Error.WriteLine("Please run 'qm config directory <directory>' to set download directory.");
-                return;
-            }
+            var downloadDirectory = Config.DownloadDirectory ?? Directory.GetCurrentDirectory();
 
-            Directory.CreateDirectory(Config.DownloadDirectory);
+            Directory.CreateDirectory(downloadDirectory);
 
-            if (!await DownloadTorrentFileAsync(hash)) return;
-            if (!await DownloadTorrentAsync(hash)) return;
+            if (!await DownloadTorrentFileAsync(downloadDirectory, hash)) return;
+            if (!await DownloadTorrentAsync(downloadDirectory, hash)) return;
         }, hash);
     }
 
-    private async Task<bool> DownloadTorrentFileAsync(string hash)
+    private async Task<bool> DownloadTorrentFileAsync(string downloadDirectory, string hash)
     {
         var torrentFilename = $"{hash}.torrent";
 
-        var torrentFile = Path.Join(Config.DownloadDirectory, torrentFilename);
+        var torrentFile = Path.Join(downloadDirectory, torrentFilename);
 
         if (File.Exists(torrentFile)) return true;
 
@@ -64,7 +59,7 @@ public class DownloadCommand : Command
         return true;
     }
 
-    private async Task<bool> DownloadTorrentAsync(string hash)
+    private async Task<bool> DownloadTorrentAsync(string downloadDirectory, string hash)
     {
         using (var engine = new ClientEngine())
         {
@@ -72,7 +67,7 @@ public class DownloadCommand : Command
             try
             {
                 torrent = await Torrent.LoadAsync(
-                    Path.Join(Config.DownloadDirectory, $"{hash}.torrent"));
+                    Path.Join(downloadDirectory, $"{hash}.torrent"));
             }
             catch (Exception ex)
             {
@@ -82,7 +77,7 @@ public class DownloadCommand : Command
 
             var manager = await engine.AddAsync(
                 torrent,
-                Config.DownloadDirectory);
+                downloadDirectory);
 
             try
             {
@@ -96,8 +91,7 @@ public class DownloadCommand : Command
 
             while (manager.State != TorrentState.Seeding)
             {
-                var startLine = Console.CursorTop;
-
+                Console.CursorVisible = false;
                 Console.WriteLine($"Downloading to {manager.ContainingDirectory}");
 
                 if (manager.State == TorrentState.Error)
@@ -111,7 +105,6 @@ public class DownloadCommand : Command
                     Console.WriteLine($"{Math.Floor(100.00 * file.BytesDownloaded() / file.Length),3:f0}%    {file.Path}");
                 }
                 await Task.Delay(1000);
-                Console.CursorTop = startLine;
             }
 
             try
