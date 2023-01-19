@@ -6,7 +6,7 @@ public class ConfigCommand : Command
         var key = new Argument<string>("key", "The config setting to manage")
         {
             HelpName = "key",
-        }.FromAmong("download");
+        }.FromAmong("directory");
         var value = new Argument<string>("value", "The new value to set. If not supplied, existing value is displayed instead")
         {
             Arity = ArgumentArity.ZeroOrOne

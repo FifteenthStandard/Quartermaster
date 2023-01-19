@@ -3,8 +3,8 @@ public static class Config
     private static string? _downloadDirectory;
     public static string? DownloadDirectory
     {
-        get => _downloadDirectory ?? (_downloadDirectory = Get("download"));
-        set => _downloadDirectory = Set("download", value);
+        get => _downloadDirectory ?? (_downloadDirectory = Get("directory"));
+        set => _downloadDirectory = Set("directory", value);
     }
 
     private static string ConfigFile = Path.Join(

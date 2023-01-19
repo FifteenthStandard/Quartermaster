@@ -12,12 +12,15 @@ public class DownloadCommand : Command
 
         this.SetHandler(async hash =>
         {
-            var downloadDirectory = Config.DownloadDirectory ?? Directory.GetCurrentDirectory();
+            var downloadDirectory = Environment.GetEnvironmentVariable("QM_DIRECTORY")
+                ?? Config.DownloadDirectory
+                ?? Directory.GetCurrentDirectory();
 
             Directory.CreateDirectory(downloadDirectory);
 
             if (!await DownloadTorrentFileAsync(downloadDirectory, hash)) return;
             if (!await DownloadTorrentAsync(downloadDirectory, hash)) return;
+            if (!DeleteTorrentFile(downloadDirectory, hash)) return;
         }, hash);
     }
 
@@ -89,22 +92,34 @@ public class DownloadCommand : Command
                 return false;
             }
 
-            while (manager.State != TorrentState.Seeding)
+            while (manager.State != TorrentState.Seeding && manager.State != TorrentState.Error)
             {
                 Console.CursorVisible = false;
                 Console.WriteLine($"Downloading to {manager.ContainingDirectory}");
-
-                if (manager.State == TorrentState.Error)
-                {
-                    Console.Error.WriteLine($"Error downloading torrent: {manager.Error.Reason} {manager.Error.Exception.Message}");
-                    return false;
-                }
-                Console.WriteLine($"{manager.PartialProgress,3:f0}%    {manager.State,-16}");
-                foreach (var file in manager.Files)
+                Console.WriteLine($"{manager.PartialProgress,3:f0}%    {manager.State,-16}    {manager.Peers.Seeds,4} seeds");
+                var viewableFiles = Console.WindowHeight - 3;
+                var files = manager.Files
+                    .Where(file => file.BytesDownloaded() < file.Length)
+                    .Take(viewableFiles)
+                    .ToArray();
+                foreach (var file in files)
                 {
                     Console.WriteLine($"{Math.Floor(100.00 * file.BytesDownloaded() / file.Length),3:f0}%    {file.Path}");
                 }
+                for (var ind = files.Length; ind < viewableFiles; ind++)
+                {
+                    Console.WriteLine();
+                }
                 await Task.Delay(1000);
+                Console.Clear();
+                Console.SetCursorPosition(0, 0);
+                Console.CursorVisible = true;
+            }
+
+            if (manager.State == TorrentState.Error)
+            {
+                Console.Error.WriteLine($"Error downloading torrent: {manager.Error.Reason} {manager.Error.Exception.Message}");
+                return false;
             }
 
             try
@@ -119,5 +134,20 @@ public class DownloadCommand : Command
 
             return true;
         }
+    }
+
+    private bool DeleteTorrentFile(string downloadDirectory, string hash)
+    {
+        var torrentFilename = $"{hash}.torrent";
+
+        var torrentFile = Path.Join(downloadDirectory, torrentFilename);
+
+        if (!File.Exists(torrentFile)) return true;
+
+        Console.WriteLine($"Deleting torrent file to {torrentFile}");
+
+        File.Delete(torrentFile);
+
+        return true;
     }
 }

@@ -52,8 +52,39 @@ public class SearchCommand : Command
             Console.Write($"--------------------------------------------------------------------------------");
             Console.WriteLine();
 
-            foreach (var result in results)
+            var height = Console.WindowHeight - 3;
+
+            var initialResults = results.Take(height);
+
+            foreach (var result in initialResults)
             {
+                Console.Write($"{result.Info_Hash}    ");
+                Console.Write($"{FormatSize(result.Size),8}    ");
+                Console.Write($"{result.Seeders,5}    ");
+                Console.Write($"{Truncate(result.Name, 80)}");
+                Console.WriteLine();
+            }
+
+            var additionalResults = results.Skip(height);
+            foreach (var result in additionalResults)
+            {
+                Console.Write("-- More  --");
+                while (true)
+                {
+                    var key = Console.ReadKey(true);
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.Q:
+                            Console.Write("\r");
+                            return;
+                        case ConsoleKey.Enter:
+                            break;
+                        default:
+                            continue;
+                    }
+                    break;
+                }
+                Console.Write("\r");
                 Console.Write($"{result.Info_Hash}    ");
                 Console.Write($"{FormatSize(result.Size),8}    ");
                 Console.Write($"{result.Seeders,5}    ");
