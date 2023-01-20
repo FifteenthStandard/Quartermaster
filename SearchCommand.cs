@@ -97,7 +97,7 @@ public class SearchCommand : Command
     string FormatSize(string sizeInBytes)
     {
         var bytes = decimal.Parse(sizeInBytes);
-        if (bytes < 1024) return $"{bytes:f1}B";
+        if (bytes < 1024) return $"{bytes}B";
         bytes /= 1024;
         if (bytes < 1024) return $"{bytes:f1}KB";
         bytes /= 1024;

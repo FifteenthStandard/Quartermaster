@@ -13,6 +13,8 @@ Arguments:
 qm download <hash>       Download a torrent
 Arguments:
   <hash>  Torrent info hash
+Options:
+  --interactive  Interactively select files to download
 
 qm config <key>          Get configuration
 Arguments:
@@ -73,6 +75,14 @@ $ qm config directory
 # Manually confirm configuration
 $ cat ~/.qmconfig
 directory = ~/torrents
+
+# Select files to download
+$ qm download 0123456789ABCDEF0123456789ABCDEF01234567 --interactive
+Downloading torrent file to ~/torrents/0123456789ABCDEF0123456789ABCDEF01234567.torrent
++    2.4GB The.Godfather.1972.mp4
+-  104.7KB The.Godfather.1972.srt
+
+[▲▼]: Move cursor    [Space]: Toggle selection    [a]: Toggle all    [Enter]: Confirm
 ```
 
 ## Dependencies

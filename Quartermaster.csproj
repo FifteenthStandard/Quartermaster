@@ -7,11 +7,16 @@
     <Nullable>enable</Nullable>
     <AssemblyTitle>Quartermaster</AssemblyTitle>
     <AssemblyName>qm</AssemblyName>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Curtis Lusmore</Authors>
     <Company>Fifteenth Standard</Company>
+    <Description>
+      Search and download torrents.
+    </Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/FifteenthStandard/Quartermaster</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/FifteenthStandard/Quartermaster.git</RepositoryUrl> 
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' != 'Pack'">
