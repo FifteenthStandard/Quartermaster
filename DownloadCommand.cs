@@ -96,9 +96,12 @@ public class DownloadCommand : Command
                 return false;
             }
 
+            var originalTitle = Console.Title;
+
             while (manager.State != TorrentState.Seeding && manager.State != TorrentState.Error)
             {
                 Console.CursorVisible = false;
+                Console.Title = $"{manager.PartialProgress,3:f0}% {torrent.Name}";
                 Console.WriteLine($"Downloading to {manager.ContainingDirectory}");
                 Console.WriteLine($"{manager.PartialProgress,3:f0}%    {manager.State,-16}    {manager.Peers.Seeds,4} seeds");
                 var viewableFiles = Console.WindowHeight - 3;
@@ -120,6 +123,8 @@ public class DownloadCommand : Command
                 Console.SetCursorPosition(0, 0);
                 Console.CursorVisible = true;
             }
+
+            Console.Title = originalTitle;
 
             if (manager.State == TorrentState.Error)
             {
