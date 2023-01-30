@@ -1,10 +1,5 @@
 ﻿global using System.CommandLine;
 
-var app = new RootCommand("Search and download torrents")
-{
-    new ConfigCommand(),
-    new SearchCommand(),
-    new DownloadCommand(),
-};
+var app = new QuartermasterCommand();
 
 return await app.InvokeAsync(args);
