@@ -15,6 +15,8 @@ Options:
   -p, --path <path>  Download directory [default: current working directory]
 ```
 
+[![asciicast](https://asciinema.org/a/WJD9tKJQwpILjkKwY3tFMseK8.png)](https://asciinema.org/a/WJD9tKJQwpILjkKwY3tFMseK8)
+
 ## Dependencies
 
 Quartermaster uses the following dependencies:
